@@ -15,7 +15,7 @@ def print_free_disk_space():
     print(f"Free: {free // (2**30)} GiB")
 
 
-def create_file_in_workspace(self, file_name, content):
+def create_file_in_workspace(file_name, content):
     workspace = os.getcwd()
     full_path = os.path.join(workspace, file_name)
 
@@ -26,7 +26,7 @@ def create_file_in_workspace(self, file_name, content):
     except Exception as e:
         print(f"Error creating file '{full_path}': {e}")
 
-def read_file_in_workspace(self, file_name):
+def read_file_in_workspace(file_name):
     workspace = os.getcwd()
     full_path = os.path.join(workspace, file_name)
 
@@ -38,7 +38,7 @@ def read_file_in_workspace(self, file_name):
     except FileNotFoundError:
         print(f"File '{full_path}' does not exist.")
         
-def move_text(self, source_file, destination_file):
+def move_text(source_file, destination_file):
     workspace = os.getcwd()
     source_path = os.path.join(workspace, source_file)
     destination_path = os.path.join(workspace, destination_file)
@@ -54,7 +54,7 @@ def move_text(self, source_file, destination_file):
     except Exception as e:
         print(f"Error moving text from '{source_path}' to '{destination_path}': {e}")
         
-def schedule_job(self, job_name, cron_expression):
+def schedule_job(job_name, cron_expression):
     try:
         jenkins_manager.enable_job(job_name)
         jenkins_manager.quiet_period(job_name, 0)
