@@ -28,12 +28,18 @@ class JenkinsJobConfig:
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>python3 JenkinsRunner.py</command>
+      <command>
+        # Install the jenkins module
+        pip3 install jenkins
+        # Run the Python script
+        python3 JenkinsRunner.py
+      </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
   <buildWrappers/>
-</project>"""
+</project>
+"""
 
     def get_config(self):
         return self.job_config
