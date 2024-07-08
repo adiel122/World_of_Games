@@ -29,10 +29,10 @@ time.sleep(10)
 jenkins_manager.build_job(job_name)
 
 if job_name == 'create_file':
-    
+    pass
 
 elif job_name == 'read_file':
-    
+    pass    
 
 elif job_name == 'free_disk':
     print_free_disk_space()
