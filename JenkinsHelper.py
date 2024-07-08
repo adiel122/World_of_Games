@@ -1,6 +1,7 @@
 import shutil
 import os
 import jenkins
+import xml.etree.ElementTree as ET
 
 from JenkinsMain import jenkins_url, username, password_or_api_token
 from jenkins_job_manager import JenkinsJobManager
@@ -10,9 +11,9 @@ jenkins_manager = JenkinsJobManager(jenkins_url, username, password_or_api_token
 
 def print_free_disk_space():
     total, used, free = shutil.disk_usage("/")
-    print(f"Total: {total // (2**30)} GiB")
-    print(f"Used: {used // (2**30)} GiB")
-    print(f"Free: {free // (2**30)} GiB")
+    print(f"Total: {total // (2 ** 30)} GiB")
+    print(f"Used: {used // (2 ** 30)} GiB")
+    print(f"Free: {free // (2 ** 30)} GiB")
 
 
 def create_file_in_workspace(file_name, content):
@@ -26,6 +27,7 @@ def create_file_in_workspace(file_name, content):
     except Exception as e:
         print(f"Error creating file '{full_path}': {e}")
 
+
 def read_file_in_workspace(file_name):
     workspace = os.getcwd()
     full_path = os.path.join(workspace, file_name)
@@ -37,7 +39,8 @@ def read_file_in_workspace(file_name):
         print(f"Content of '{full_path}':\n{content}")
     except FileNotFoundError:
         print(f"File '{full_path}' does not exist.")
-        
+
+
 def move_text(source_file, destination_file):
     workspace = os.getcwd()
     source_path = os.path.join(workspace, source_file)
@@ -53,14 +56,17 @@ def move_text(source_file, destination_file):
         print(f"File '{source_path}' does not exist.")
     except Exception as e:
         print(f"Error moving text from '{source_path}' to '{destination_path}': {e}")
-        
-def schedule_job(job_name, cron_expression):
+
+
+def schedule_job(job_name, new_cron_expression):
     try:
+        # Create a Jenkins server instance
+        server = jenkins.Jenkins(jenkins_url, username=username, password=password_or_api_token)
+
         # Get the current job configuration XML
-        config_xml = jenkins_manager.get_job_config(job_name)
+        config_xml = server.get_job_config(job_name)
 
         # Parse the XML
-        import xml.etree.ElementTree as ET
         root = ET.fromstring(config_xml)
 
         # Find the <triggers> element
@@ -76,15 +82,15 @@ def schedule_job(job_name, cron_expression):
         # Add the new cron trigger
         timer_trigger = ET.SubElement(triggers, 'hudson.triggers.TimerTrigger')
         spec = ET.SubElement(timer_trigger, 'spec')
-        spec.text = cron_expression
+        spec.text = new_cron_expression
 
         # Convert the modified XML back to a string
         new_config_xml = ET.tostring(root, encoding='unicode')
 
         # Update the job with the new configuration
-        jenkins_manager.reconfig_job(job_name, new_config_xml)
+        server.reconfig_job(job_name, new_config_xml)
 
-        print(f"Job '{job_name}' schedule updated successfully to '{cron_expression}'.")
+        print(f"Job '{job_name}' schedule updated successfully to '{new_cron_expression}'.")
     except jenkins.JenkinsException as e:
         print(f"Failed to update job '{job_name}': {e}")
     except Exception as e:
