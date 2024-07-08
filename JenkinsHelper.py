@@ -2,9 +2,7 @@ import shutil
 import os
 from jenkins import JenkinsException
 
-file_name = 'example.txt'
-source_file = '/path/to/source/'+file_name
-destination_directory = '/path/to/destination/directory'
+
 def print_free_disk_space():
     total, used, free = shutil.disk_usage("/")
     print(f"Total: {total // (2**30)} GiB")
@@ -62,19 +60,3 @@ def schedule_job(self, job_name, cron_expression):
         print(f"Failed to schedule job '{job_name}': {e}")
     except Exception as e:
         print(f"Unexpected error scheduling job '{job_name}': {e}")
-    
-    
-def run_job_details(self):
-    job_name = os.environ.get('JOB_NAME')    
-    if job_name == 'create_file':
-        create_file_in_workspace(self, file_name, 'This file is created during the build job.')
-    elif job_name == 'read_file':
-        read_file_in_workspace(self, "file_name")
-    elif job_name == 'free_disk':
-        print_free_disk_space()
-    elif job_name == 'move_text':
-        move_text(self, source_file, destination_directory)
-    elif job_name == 'schedule':
-        schedule_job(self, job_name, "0 8 * * *")
-    else:
-        print("Invalid action.")
