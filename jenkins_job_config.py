@@ -29,10 +29,28 @@ class JenkinsJobConfig:
   <builders>
     <hudson.tasks.Shell>
       <command>
+        #!/bin/bash
+        
+        # Change to the directory where the script is located
+        cd /var/jenkins_home/workspace/free_disk
+        
+        # Create a virtual environment
+        python3 -m venv venv
+        
+        # Activate the virtual environment
+        source venv/bin/activate
+        
+        # Upgrade pip
+        pip install --upgrade pip
+        
         # Install the jenkins module
-        pip3 install jenkins
+        pip install jenkins
+        
         # Run the Python script
-        python3 JenkinsRunner.py
+        python JenkinsRunner.py
+        
+        # Deactivate the virtual environment
+        deactivate
       </command>
     </hudson.tasks.Shell>
   </builders>
