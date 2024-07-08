@@ -2,6 +2,8 @@ import time
 from jenkins_job_manager import JenkinsJobManager
 from jenkins_job_config import JenkinsJobConfig, JenkinsJobReader
 
+print("Adiel is the best!")
+
 jenkins_url = 'http://localhost:8080'
 username = 'admin'
 password_or_api_token = '11e7a9c3c81256b5fee661f3d9d66b4e2f'
