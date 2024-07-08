@@ -4,6 +4,7 @@ import os
 from jenkins_job_manager import JenkinsJobManager
 from jenkins_job_config import JenkinsJobConfig, JenkinsJobReader
 from JenkinsHelper import print_free_disk_space
+from jenkins import JenkinsException
 
 print("Adiel is the best!")
 
