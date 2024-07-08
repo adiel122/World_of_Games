@@ -56,12 +56,36 @@ def move_text(source_file, destination_file):
         
 def schedule_job(job_name, cron_expression):
     try:
-        jenkins_manager.enable_job(job_name)
-        jenkins_manager.quiet_period(job_name, 0)
-        jenkins_manager.poll(job_name)
-        jenkins_manager.build_job(job_name)
-        print(f"Job '{job_name}' scheduled successfully with cron expression '{cron_expression}'.")
+        # Get the current job configuration XML
+        config_xml = jenkins_manager.get_job_config(job_name)
+
+        # Parse the XML
+        import xml.etree.ElementTree as ET
+        root = ET.fromstring(config_xml)
+
+        # Find the <triggers> element
+        triggers = root.find('triggers')
+        if triggers is None:
+            # If no <triggers> element, create one
+            triggers = ET.SubElement(root, 'triggers', {'class': 'vector'})
+
+        # Remove existing cron triggers
+        for trigger in triggers.findall('hudson.triggers.TimerTrigger'):
+            triggers.remove(trigger)
+
+        # Add the new cron trigger
+        timer_trigger = ET.SubElement(triggers, 'hudson.triggers.TimerTrigger')
+        spec = ET.SubElement(timer_trigger, 'spec')
+        spec.text = cron_expression
+
+        # Convert the modified XML back to a string
+        new_config_xml = ET.tostring(root, encoding='unicode')
+
+        # Update the job with the new configuration
+        jenkins_manager.reconfig_job(job_name, new_config_xml)
+
+        print(f"Job '{job_name}' schedule updated successfully to '{cron_expression}'.")
     except jenkins.JenkinsException as e:
-        print(f"Failed to schedule job '{job_name}': {e}")
+        print(f"Failed to update job '{job_name}': {e}")
     except Exception as e:
-        print(f"Unexpected error scheduling job '{job_name}': {e}")
+        print(f"Unexpected error updating job '{job_name}': {e}")
