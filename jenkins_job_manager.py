@@ -1,5 +1,7 @@
 import requests
 from requests.auth import HTTPBasicAuth
+from jenkinsapi.jenkins import Jenkins
+
 
 class JenkinsJobManager:
     def __init__(self, jenkins_url, username, password_or_api_token):
@@ -39,6 +41,20 @@ class JenkinsJobManager:
         # Note: This functionality might need a Jenkins plugin or workaround
         print(f"Creating file '{file_name}' in workspace of job '{job_name}' with content: {file_content}")
 
-    def read_file_in_workspace(self, job_name, file_name):
-        # Note: This functionality might need a Jenkins plugin or workaround
+    def get_jenkins_instance(url, username, password):
+        return Jenkins(url, username=username, password=password)
+    def read_file_in_workspace(jenkins_url, username, password, job_name, file_name):
+        jenkins = get_jenkins_instance(jenkins_url, username, password)
+        job = jenkins[job_name]
+        build = job.get_last_build()
+        workspace = build.get_workspace()
+    
+        file_path = f"{workspace}/{file_name}"
         print(f"Reading file '{file_name}' in workspace of job '{job_name}'")
+    
+        try:
+            with open(file_path, 'r') as file:
+                content = file.read()
+                print(content)
+        except Exception as e:
+            print(f"Error reading file: {e}")
