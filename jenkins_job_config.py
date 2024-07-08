@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+import jenkins
 
 class JenkinsJobConfig:
     def __init__(self):
@@ -43,8 +44,8 @@ class JenkinsJobConfig:
         # Upgrade pip
         pip install --upgrade pip
         
-        # Install the jenkins module
-        pip install jenkins
+        # Install the alternative python-jenkins module
+        pip install python-jenkins
         
         # Run the Python script
         python JenkinsRunner.py
