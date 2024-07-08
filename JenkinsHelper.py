@@ -1,6 +1,6 @@
 import shutil
 import os
-from jenkins import JenkinsException
+import jenkins
 
 
 def print_free_disk_space():
@@ -56,7 +56,7 @@ def schedule_job(self, job_name, cron_expression):
         self.server.poll(job_name)
         self.server.build_job(job_name)
         print(f"Job '{job_name}' scheduled successfully with cron expression '{cron_expression}'.")
-    except JenkinsException as e:
+    except jenkins.JenkinsException as e:
         print(f"Failed to schedule job '{job_name}': {e}")
     except Exception as e:
         print(f"Unexpected error scheduling job '{job_name}': {e}")
