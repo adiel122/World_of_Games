@@ -2,6 +2,11 @@ import shutil
 import os
 import jenkins
 
+from JenkinsMain import jenkins_url, username, password_or_api_token
+from jenkins_job_manager import JenkinsJobManager
+
+jenkins_manager = JenkinsJobManager(jenkins_url, username, password_or_api_token)
+
 
 def print_free_disk_space():
     total, used, free = shutil.disk_usage("/")
@@ -51,10 +56,10 @@ def move_text(self, source_file, destination_file):
         
 def schedule_job(self, job_name, cron_expression):
     try:
-        self.server.enable_job(job_name)
-        self.server.quiet_period(job_name, 0)
-        self.server.poll(job_name)
-        self.server.build_job(job_name)
+        jenkins_manager.enable_job(job_name)
+        jenkins_manager.quiet_period(job_name, 0)
+        jenkins_manager.poll(job_name)
+        jenkins_manager.build_job(job_name)
         print(f"Job '{job_name}' scheduled successfully with cron expression '{cron_expression}'.")
     except jenkins.JenkinsException as e:
         print(f"Failed to schedule job '{job_name}': {e}")
