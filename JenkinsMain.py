@@ -1,6 +1,7 @@
 import time
 from jenkins_job_manager import JenkinsJobManager
 from jenkins_job_config import JenkinsJobConfig, JenkinsJobReader
+from JenkinsHelper import print_free_disk_space
 
 print("Adiel is the best!")
 
@@ -26,6 +27,8 @@ jenkins_manager.build_job(job_name)
 jenkins_manager.create_file_in_workspace(job_name, file_name, 'This file is created during the build job.')
 
 jenkins_manager.read_file_in_workspace(job_name, file_name)
+
+print_free_disk_space()
 
 # Print job details
 print("SCM URL:", job_details['scm_url'])
