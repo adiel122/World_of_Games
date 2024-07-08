@@ -42,14 +42,15 @@ class JenkinsJobManager:
         print(f"Creating file '{file_name}' in workspace of job '{job_name}' with content: {file_content}")
 
     def read_file_in_workspace(self, jenkins_url, username, password, job_name, file_name):
-        jenkins = self.get_jenkins_instance(jenkins_url, username, password)
-        job = jenkins[job_name]
+        if not self.jenkins:
+            self.jenkins = self.get_jenkins_instance(jenkins_url, username, password)
+        job = self.jenkins[job_name]
         build = job.get_last_build()
         workspace = build.get_workspace()
-    
+
         file_path = f"{workspace}/{file_name}"
         print(f"Reading file '{file_name}' in workspace of job '{job_name}'")
-    
+
         try:
             with open(file_path, 'r') as file:
                 content = file.read()

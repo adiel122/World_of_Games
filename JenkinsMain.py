@@ -25,6 +25,7 @@ time.sleep(10)
 jenkins_manager.build_job(job_name)
 jenkins_manager.create_file_in_workspace(job_name, file_name, 'This file is created during the build job.')
 
+# Read the file content from the workspace
 jenkins_manager.read_file_in_workspace(jenkins_url, username, password_or_api_token, job_name, file_name)
 
 # Print job details
