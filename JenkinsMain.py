@@ -6,7 +6,7 @@ print("Adiel is the best!")
 
 jenkins_url = 'http://localhost:8080'
 username = 'admin'
-password_or_api_token = '11e7a9c3c81256b5fee661f3d9d66b4e2f'
+password_or_api_token = '111e6b82a7320b8ec2c88401592594c337'
 
 file_name = 'example.txt'
 job_name = 'Github_Job'
