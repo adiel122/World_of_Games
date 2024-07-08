@@ -11,7 +11,7 @@ jenkins_url = 'http://localhost:8080'
 username = 'admin'
 password_or_api_token = '111e6b82a7320b8ec2c88401592594c337'
 
-file_name = 'example.txt'
+
 job_name = os.environ.get('JobName')
 
 if not job_name:
@@ -29,10 +29,10 @@ time.sleep(10)
 jenkins_manager.build_job(job_name)
 
 if job_name == 'create_file':
-    jenkins_manager.create_file_in_workspace(job_name, file_name, 'This file is created during the build job.')
+    
 
 elif job_name == 'read_file':
-    jenkins_manager.read_file_in_workspace(job_name, file_name)
+    
 
 elif job_name == 'free_disk':
     print_free_disk_space()
