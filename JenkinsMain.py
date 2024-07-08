@@ -28,25 +28,6 @@ jenkins_manager.create_job(job_name, job_config)
 time.sleep(10)
 jenkins_manager.build_job(job_name)
 
-if job_name == 'create_file':
-    pass
-
-elif job_name == 'read_file':
-    pass    
-
-elif job_name == 'free_disk':
-    print_free_disk_space()
-
-elif job_name == 'move_text':
-    # Implement the logic for move_text
-    pass
-
-elif job_name == 'schedule':
-    # Implement the logic for schedule
-    pass
-
-else:
-    print("Invalid action.")
 
 # Print job details
 print("SCM URL:", job_details['scm_url'])
