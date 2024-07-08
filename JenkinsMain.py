@@ -14,9 +14,6 @@ password_or_api_token = '111e6b82a7320b8ec2c88401592594c337'
 job_name = os.environ.get('JobName')
 print(job_name)
 
-if not job_name:
-    raise EnvironmentError("The environment variable 'JobName' is not set.")
-
 # Get job configuration using JenkinsJobConfig and JenkinsJobReader
 job_config = JenkinsJobConfig().get_config()
 reader = JenkinsJobReader(job_config)
