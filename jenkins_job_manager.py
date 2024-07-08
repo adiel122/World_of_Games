@@ -44,7 +44,7 @@ class JenkinsJobManager:
     def get_jenkins_instance(url, username, password):
         return Jenkins(url, username=username, password=password)
     def read_file_in_workspace(jenkins_url, username, password, job_name, file_name):
-        jenkins = get_jenkins_instance(jenkins_url, username, password)
+        jenkins = jenkins_url.get_jenkins_instance(jenkins_url, username, password)
         job = jenkins[job_name]
         build = job.get_last_build()
         workspace = build.get_workspace()
