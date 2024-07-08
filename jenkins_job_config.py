@@ -33,7 +33,7 @@ class JenkinsJobConfig:
         #!/bin/bash
         
         # Change to the directory where the script is located
-        cd /var/jenkins_home/workspace/free_disk
+        cd /var/jenkins_home/workspace/$JOB_NAME
         
         # Create a virtual environment
         python3 -m venv venv
