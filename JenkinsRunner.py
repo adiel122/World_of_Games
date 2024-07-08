@@ -6,7 +6,7 @@ source_file = '/path/to/source/'+file_name
 destination_directory = '/path/to/destination/directory'
 
 def run_job_details():
-    job_name = os.environ.get('JOB_NAME') 
+    job_name = os.environ.get('JOB_NAME')
     if job_name == 'create_file':
         helper.create_file_in_workspace(file_name=file_name,content= 'This file is created during the build job.')
     elif job_name == 'read_file':
