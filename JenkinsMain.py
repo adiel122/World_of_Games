@@ -21,9 +21,16 @@ job_details = reader.read_config()
 
 jenkins_manager = JenkinsJobManager(jenkins_url, username, password_or_api_token)
 
-jenkins_manager.create_job(job_name, job_config)
-time.sleep(10)
-jenkins_manager.build_job(job_name)
+def is_not_empty(value):
+    return value is not None and value != ""
+
+if is_not_empty(job_name) and is_not_empty(job_config):
+    jenkins_manager.create_job(job_name, job_config)
+    time.sleep(10)
+    jenkins_manager.build_job(job_name)
+else:
+    print("Error: job_name and job_config must not be null or empty.")
+
 
 
 # Print job details
