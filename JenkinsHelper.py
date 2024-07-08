@@ -5,3 +5,6 @@ def print_free_disk_space():
     print(f"Total: {total // (2**30)} GiB")
     print(f"Used: {used // (2**30)} GiB")
     print(f"Free: {free // (2**30)} GiB")
+
+
+print_free_disk_space()
