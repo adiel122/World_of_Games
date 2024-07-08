@@ -28,7 +28,7 @@ class JenkinsJobConfig:
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo "Building..."</command>
+      <command>python3 JenkinsRunner.py</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
