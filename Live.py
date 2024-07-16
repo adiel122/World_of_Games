@@ -1,4 +1,6 @@
 import random
+import Guess
+import Score
 
 class WorldOfGames:
     def __init__(self, name):
@@ -30,7 +32,15 @@ class WorldOfGames:
                 continue
 
         print(f"You chose game number {game_choice} with difficulty level {difficulty_level}.")
-        return game_choice, difficulty_level
+
+        if game_choice == 2:  # Guess Game
+            game = Guess.GuessGame(difficulty_level)
+            result = game.play()
+            if result:
+                Score.add_score(difficulty_level)
+                print("Your score has been updated.")
+        else:
+            print("Selected game is not implemented yet.")
 
 # Run the game
 if __name__ == "__main__":
