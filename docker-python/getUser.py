@@ -1,2 +1,2 @@
 import os
-print("User name:", os.getlogin())
+print("User name:",  os.getenv("USER"))
