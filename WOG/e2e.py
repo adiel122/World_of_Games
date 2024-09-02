@@ -8,10 +8,11 @@ def test_scores_service(url):
     try:
         # Set up the WebDriver (this will automatically install the latest version of ChromeDriver)
         driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-
+        print("Start chrome driver")
+        
         # Open the URL
         driver.get(url)
-
+        
         # Find the score element by its ID
         score_element = driver.find_element(By.ID, "score")
 
