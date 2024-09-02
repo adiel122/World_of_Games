@@ -16,6 +16,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    // Ensure Docker is available
+                    sh 'docker --version'
+                    
                     // Build the Docker image
                     docker.build("${DOCKER_IMAGE}")
                 }
@@ -26,7 +29,11 @@ pipeline {
             steps {
                 script {
                     // Run the Docker container and expose port 8777
-                    sh 'docker run -d -p 8777:8777 --name wog_container -v $(pwd)/Scores.txt:/usr/src/app/Scores.txt ${DOCKER_IMAGE}'
+                    sh '''
+                    docker stop wog_container || true
+                    docker rm wog_container || true
+                    docker run -d -p 8777:8777 --name wog_container -v $(pwd)/Scores.txt:/usr/src/app/Scores.txt ${DOCKER_IMAGE}
+                    '''
                 }
             }
         }
@@ -47,8 +54,10 @@ pipeline {
             steps {
                 script {
                     // Stop and remove the container after tests
-                    sh 'docker stop wog_container'
-                    sh 'docker rm wog_container'
+                    sh '''
+                    docker stop wog_container || true
+                    docker rm wog_container || true
+                    '''
 
                     // Push the Docker image to DockerHub
                     docker.image("${DOCKER_IMAGE}").push()
