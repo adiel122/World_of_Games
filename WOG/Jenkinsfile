@@ -2,54 +2,71 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'adielhay/wog_0.1'
+        DOCKER_IMAGE = 'adielhay/wog_0.1:latest'
     }
-    
+
     stages {
         stage('Checkout') {
             steps {
+                // Checkout the repository
                 checkout scm
             }
         }
-        
+
         stage('Build') {
             steps {
                 script {
+                    // Build the Docker image
                     docker.build("${DOCKER_IMAGE}")
                 }
             }
         }
-        
+
         stage('Run') {
             steps {
                 script {
-                    docker.image("${DOCKER_IMAGE}").run('-p 8777:8777 -v $(pwd)/Scores.txt:/Scores.txt')
+                    // Run the Docker container and expose port 8777
+                    sh 'docker run -d -p 8777:8777 --name wog_container -v $(pwd)/Scores.txt:/usr/src/app/Scores.txt ${DOCKER_IMAGE}'
                 }
             }
         }
-        
+
         stage('Test') {
             steps {
                 script {
-                    def testStatus = sh(script: 'python e2e.py', returnStatus: true)
+                    // Run the e2e tests using the e2e.py script
+                    def testStatus = sh(script: 'python3 e2e.py http://localhost:8777', returnStatus: true)
                     if (testStatus != 0) {
-                        error("Tests failed")
+                        error("End-to-end tests failed")
                     }
                 }
             }
         }
-        
+
         stage('Finalize') {
             steps {
                 script {
-                    sh 'docker stop $(docker ps -q --filter ancestor=${DOCKER_IMAGE})'
-                    sh 'docker rm $(docker ps -aq --filter ancestor=${DOCKER_IMAGE})'
-                }
-                
-                script {
+                    // Stop and remove the container after tests
+                    sh 'docker stop wog_container'
+                    sh 'docker rm wog_container'
+
+                    // Push the Docker image to DockerHub
                     docker.image("${DOCKER_IMAGE}").push()
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            // Clean up workspace
+            deleteDir()
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }
