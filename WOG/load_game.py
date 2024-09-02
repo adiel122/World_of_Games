@@ -1,3 +1,5 @@
+from Score import add_score
+
 def load_game():
     print("Please choose a game to play:")
     print("1. Memory Game - a sequence of numbers will appear for 0.7 seconds and you have to recall them.")
@@ -20,7 +22,9 @@ def load_game():
         print("Invalid choice.")
         return
 
-    game.play()
+    if game.play():
+        add_score(difficulty)  # Add score if the user wins
+
 
 if __name__ == "__main__":
     load_game()
