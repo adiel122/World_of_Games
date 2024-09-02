@@ -1,0 +1,55 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_IMAGE = 'adielhay/WOG0.1'
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE}")
+                }
+            }
+        }
+        
+        stage('Run') {
+            steps {
+                script {
+                    docker.image("${DOCKER_IMAGE}").run('-p 8777:8777 -v $(pwd)/Scores.txt:/Scores.txt')
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                script {
+                    def testStatus = sh(script: 'python e2e.py', returnStatus: true)
+                    if (testStatus != 0) {
+                        error("Tests failed")
+                    }
+                }
+            }
+        }
+        
+        stage('Finalize') {
+            steps {
+                script {
+                    sh 'docker stop $(docker ps -q --filter ancestor=${DOCKER_IMAGE})'
+                    sh 'docker rm $(docker ps -aq --filter ancestor=${DOCKER_IMAGE})'
+                }
+                
+                script {
+                    docker.image("${DOCKER_IMAGE}").push()
+                }
+            }
+        }
+    }
+}
