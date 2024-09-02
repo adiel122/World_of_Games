@@ -5,6 +5,9 @@ pipeline {
         DOCKER_IMAGE = 'adielhay/wog_0.1:latest'
     }
 
+    tools {
+        docker 'latest'
+    }
     stages {
         stage('Checkout') {
             steps {
