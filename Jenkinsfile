@@ -1,84 +1,47 @@
 pipeline {
     agent any
-    
-    environment {
-        DOCKER_IMAGE = 'adielhay/wog_0.1:latest'
-    }
 
-    tools {
-        docker 'latest'
-    }
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the repository
+                // Checkout the repository from source control
                 checkout scm
             }
         }
-
         stage('Build') {
             steps {
+                // Build the Docker image
                 script {
-                    // Ensure Docker is available
-                    sh 'docker --version'
-                    
-                    // Build the Docker image
-                    docker.build("${DOCKER_IMAGE}")
+                    docker.build('my-flask-app')
                 }
             }
         }
-
         stage('Run') {
             steps {
+                // Run the Docker container
                 script {
-                    // Run the Docker container and expose port 8777
-                    sh '''
-                    docker stop wog_container || true
-                    docker rm wog_container || true
-                    docker run -d -p 8777:8777 --name wog_container -v $(pwd)/Scores.txt:/usr/src/app/Scores.txt ${DOCKER_IMAGE}
-                    '''
+                    docker.image('my-flask-app').run('-p 8777:8777 -v $WORKSPACE/Scores.txt:/Scores.txt')
                 }
             }
         }
-
         stage('Test') {
             steps {
+                // Run the end-to-end tests
                 script {
-                    // Run the e2e tests using the e2e.py script
-                    def testStatus = sh(script: 'python3 e2e.py http://localhost:8777', returnStatus: true)
-                    if (testStatus != 0) {
-                        error("End-to-end tests failed")
+                    def status = sh(script: 'python e2e.py', returnStatus: true)
+                    if (status != 0) {
+                        error("Tests failed")
                     }
                 }
             }
         }
-
         stage('Finalize') {
             steps {
+                // Finalize: Clean up
                 script {
-                    // Stop and remove the container after tests
-                    sh '''
-                    docker stop wog_container || true
-                    docker rm wog_container || true
-                    '''
-
-                    // Push the Docker image to DockerHub
-                    docker.image("${DOCKER_IMAGE}").push()
+                    sh 'docker stop $(docker ps -q --filter ancestor=my-flask-app)'
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up workspace
-            deleteDir()
-        }
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed.'
         }
     }
 }
