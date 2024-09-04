@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - "8080:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    restart: always
+
+  git:
+    image: gitea/gitea:latest
+    container_name: git
+    ports:
+      - "3000:3000"
+      - "222:22"
+    volumes:
+      - gitea:/data
+    restart: always
+
+  docker:
+    image: docker:dind
+    container_name: docker
+    privileged: true
+    ports:
+      - "2375:2375"
+    restart: always
+
+  kubectl:
+    image: bitnami/kubectl:latest
+    container_name: kubectl
+    command: sleep infinity
+    restart: always
+    volumes:
+      - ./kubeconfig:/root/.kube/config
+
+  helm:
+    image: alpine/helm:latest
+    container_name: helm
+    command: sleep infinity
+    restart: always
+
+  terraform:
+    image: hashicorp/terraform:latest
+    container_name: terraform
+    command: sleep infinity
+    volumes:
+      - ./terraform:/workspace
+    restart: always
+
+  ansible:
+    image: williamyeh/ansible:alpine3
+    container_name: ansible
+    command: sleep infinity
+    volumes:
+      - ./ansible:/workspace
+    restart: always
+
+  monitoring:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    restart: always
+
